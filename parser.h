@@ -13,10 +13,9 @@ using join_session_ptr = std::shared_ptr<join_session>;
 class Parser
 {
 public:
-    Parser(ThreadSave_Queue<std::pair<std::string, join_session_ptr> >& queue_);
+    Parser();
     void operator ()();
 
 private:
     QueryExecutor executor;
-    ThreadSave_Queue<std::pair<std::string, join_session_ptr> >& queue;
 };

@@ -18,7 +18,7 @@ find_package(Threads)
 aux_source_directory(. SRC_LIST)
 
 add_executable(${PROJECT_NAME} ${SRC_LIST} join_server.h join_session.h
-    query_executor.h threadsafe_queue.h data_base.h parser.h)
+    query_executor.h threadsafe_queue.h data_base.h parser.h thread_pool.h)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
         CXX_STANDARD 14

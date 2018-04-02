@@ -12,9 +12,8 @@ template<typename T>
 class ThreadSave_Queue
 {
 public:
-    explicit ThreadSave_Queue(std::condition_variable& data_cond_,
-                              const bool& finish_)
-        : data_cond(data_cond_), finish(finish_){}
+    explicit ThreadSave_Queue() = default;
+    ThreadSave_Queue(ThreadSave_Queue&& queue_){}
     ThreadSave_Queue(const ThreadSave_Queue& ) = delete;
     ThreadSave_Queue& operator =(const ThreadSave_Queue& ) = delete;
     ~ThreadSave_Queue() = default;
@@ -23,15 +22,13 @@ public:
     {
         std::lock_guard<std::mutex> lk(mt);
         queue.emplace(std::move(new_value));
-        data_cond.notify_all();
     }
 
-    bool wait_and_pop(T& value)
+    bool try_pop(T& value) noexcept
     {
-        std::unique_lock<std::mutex> lk(mt);
-        if(finish && queue.empty())
+        std::lock_guard<std::mutex> lk(mt);
+        if(queue.empty())
             return false;
-        data_cond.wait(lk, [this]{ return (!queue.empty() || finish); });
         value = queue.front();
         queue.pop();
         return true;
@@ -46,6 +43,4 @@ public:
 private:
     std::queue<T> queue;
     mutable std::mutex mt;
-    std::condition_variable& data_cond;
-    const bool& finish;
 };
