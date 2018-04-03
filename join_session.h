@@ -6,6 +6,8 @@
 #include <mutex>
 #include "threadsafe_queue.h"
 
+#include <iostream>
+
 namespace ba = boost::asio;
 
 class join_session;

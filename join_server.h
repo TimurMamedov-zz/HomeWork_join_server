@@ -16,11 +16,7 @@ public:
         do_accept();
     }
 
-    ~join_server()
-    {
-//        finish = true;
-//        writeThread.join();
-    }
+    ~join_server() = default;
 
 private:
     void do_accept()
