@@ -5,6 +5,7 @@
 #include <string>
 #include <mutex>
 #include "threadsafe_queue.h"
+#include "query_executor.h"
 
 #include <iostream>
 
@@ -20,10 +21,11 @@ class join_session
 public:
     join_session(ba::ip::tcp::socket socket,
                  std::set<join_session_ptr>& join_sessions,
-                 ThreadSave_Queue<std::function<void()> >& queue_)
+                 ThreadSave_Queue<std::function<void()> >& queue_,
+                 QueryExecutor& executor_)
         : socket_(std::move(socket)),
           join_sessions_(join_sessions),
-          queue(queue_)
+          queue(queue_), executor(executor_)
     {
     }
 
@@ -62,9 +64,10 @@ private:
                 std::istream is(&streambuf);
                 std::string line;
                 std::getline(is, line);
-                queue.push([self, line]()
+                queue.push([this, self, line]()
                 {
-                    self->do_write(line);
+                    auto response = executor.execute(line);
+                    self->do_write(response);
                 });
                 do_read();
             }
@@ -80,4 +83,5 @@ private:
     ba::ip::tcp::socket socket_;
     std::set<join_session_ptr>& join_sessions_;
     ThreadSave_Queue<std::function<void()> >& queue;
+    QueryExecutor& executor;
 };

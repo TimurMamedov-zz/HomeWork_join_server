@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 //            std::cerr << "Usage:  join_session <port>\n";
 //            return 1;
 //        }
-
+        std::cout << 2 % 1 << std::endl;
         ba::io_service io_service;
 
 //        ba::ip::tcp::endpoint endpoint(ba::ip::tcp::v4(), std::atoi(argv[1]));
