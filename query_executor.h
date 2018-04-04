@@ -26,5 +26,7 @@ private:
 
     std::string insert(const std::vector<std::string>& words);
     std::string truncate(const std::vector<std::string>& words);
+    std::string intersection(const std::vector<std::string>& words);
+    std::string simmetric_difference(const std::vector<std::string>& words);
 };
 

@@ -2,8 +2,9 @@
 #include <unordered_map>
 #include <map>
 #include <string>
+#include <mutex>
 
-using table = std::unordered_map<int, std::string>;
+using table = std::pair<std::mutex, std::unordered_map<int, std::string> >;
 
 class DataBase
 {

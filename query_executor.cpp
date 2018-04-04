@@ -20,8 +20,20 @@ QueryExecutor::QueryExecutor()
         return this->truncate(words);
     };
 
+    auto IntersectionFunc = [this](const std::vector<std::string>& words)
+    {
+        return this->intersection(words);
+    };
+
+    auto SimmetricDifferenceFunc = [this](const std::vector<std::string>& words)
+    {
+        return this->simmetric_difference(words);
+    };
+
     func_hash.emplace("INSERT", InsertFunc);
     func_hash.emplace("TRUNCATE", TruncateFunc);
+    func_hash.emplace("INTERSECTION", IntersectionFunc);
+    func_hash.emplace("SYMMETRIC_DIFFERENCE", SimmetricDifferenceFunc);
 }
 
 std::string QueryExecutor::execute(std::string query)
@@ -32,7 +44,8 @@ std::string QueryExecutor::execute(std::string query)
     std::copy(std::istream_iterator<std::string>(iss),
               std::istream_iterator<std::string>(),
               std::back_inserter(words));
-    if(words.size() > 4 || words.size() == 3 ||
+    if(words.size() > 4 ||
+            words.size() == 3 ||
             words.empty())
         response = "ERR invalid query";
     else
@@ -54,9 +67,9 @@ std::string QueryExecutor::insert(const std::vector<std::string> &words)
     {
         std::lock_guard<std::mutex> lk(mutexDB);
         auto& table_hash = DataBase::tables[words[1]];
-        if(table_hash.find(id) == table_hash.end())
+        if(table_hash.second.find(id) == table_hash.second.end())
         {
-            table_hash.emplace(id, words[3]);
+            table_hash.second.emplace(id, words[3]);
             response = "OK";
         }
         else
@@ -73,10 +86,22 @@ std::string QueryExecutor::truncate(const std::vector<std::string> &words)
     if(DataBase::tables.find(words[1]) != DataBase::tables.end())
     {
         std::lock_guard<std::mutex> lk(mutexDB);
-        DataBase::tables[words[1]].clear();
+        DataBase::tables[words[1]].second.clear();
         response = "OK";
     }
     else
         response = "ERR invalid name table";
+    return response;
+}
+
+std::string QueryExecutor::intersection(const std::vector<std::string> &words)
+{
+    std::string response;
+    return response;
+}
+
+std::string QueryExecutor::simmetric_difference(const std::vector<std::string> &words)
+{
+    std::string response;
     return response;
 }
