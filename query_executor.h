@@ -14,6 +14,9 @@
 
 namespace ba = boost::asio;
 
+using InputIterator = std::map<int, std::string>::iterator;
+using Container = std::queue<std::string>;
+
 class QueryExecutor
 {
 public:
@@ -28,17 +31,15 @@ private:
     std::queue<std::string> insert(const std::vector<std::string>& words);
     std::queue<std::string> truncate(const std::vector<std::string>& words);
 
-    template<typename InputIterator, typename Container>
     void set_intersection(InputIterator first1, InputIterator last1,
                      InputIterator first2, InputIterator last2,
                      Container& container);
-    std::queue<std::string> intersection(const std::vector<std::string>& words);
+    std::queue<std::string> intersection();
 
-    template<class InputIterator, typename Container>
     void set_symmetric_difference(InputIterator first1, InputIterator last1,
                                       InputIterator first2, InputIterator last2,
                                       Container& container);
-    std::queue<std::string> simmetric_difference(const std::vector<std::string>& words);
+    std::queue<std::string> simmetric_difference();
 
     template<typename Func, typename Container>
     void applyFunction(Func func, Container& container);

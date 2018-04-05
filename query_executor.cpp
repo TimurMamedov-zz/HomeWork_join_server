@@ -22,12 +22,12 @@ QueryExecutor::QueryExecutor()
 
     auto IntersectionFunc = [this](const std::vector<std::string>& words)
     {
-        return this->intersection(words);
+        return this->intersection();
     };
 
     auto SimmetricDifferenceFunc = [this](const std::vector<std::string>& words)
     {
-        return this->simmetric_difference(words);
+        return this->simmetric_difference();
     };
 
     func_hash.emplace("INSERT", InsertFunc);
@@ -95,23 +95,20 @@ std::queue<std::string> QueryExecutor::truncate(const std::vector<std::string> &
     return response;
 }
 
-std::queue<std::string> QueryExecutor::intersection(const std::vector<std::string> &words)
+std::queue<std::string> QueryExecutor::intersection()
 {
     std::queue<std::string> response;
-    applyFunction(set_intersection<std::map<int, std::string>::iterator,
-                            std::queue<std::string> >, response);
+    applyFunction(&QueryExecutor::set_intersection, response);
     return response;
 }
 
-std::queue<std::string> QueryExecutor::simmetric_difference(const std::vector<std::string> &words)
+std::queue<std::string> QueryExecutor::simmetric_difference()
 {
     std::queue<std::string> response;
-    applyFunction(set_symmetric_difference<std::map<int, std::string>::iterator,
-                            std::queue<std::string> >, response);
+    applyFunction(&QueryExecutor::set_symmetric_difference, response);
     return response;
 }
 
-template<typename InputIterator, typename Container>
 void QueryExecutor::set_intersection(InputIterator first1, InputIterator last1,
                                      InputIterator first2, InputIterator last2,
                                      Container &container)
@@ -131,7 +128,6 @@ void QueryExecutor::set_intersection(InputIterator first1, InputIterator last1,
         }
 }
 
-template<typename InputIterator, typename Container>
 void QueryExecutor::set_symmetric_difference(InputIterator first1, InputIterator last1,
                                              InputIterator first2, InputIterator last2,
                                              Container &container)

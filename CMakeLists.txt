@@ -18,12 +18,12 @@ find_package(Threads)
 aux_source_directory(. SRC_LIST)
 
 add_executable(${PROJECT_NAME} ${SRC_LIST} join_server.h join_session.h
-    query_executor.h threadsafe_queue.h data_base.h parser.h thread_pool.h join_threads)
+    query_executor.h threadsafe_queue.h data_base.h parser.h thread_pool.h join_threads.h)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
         CXX_STANDARD 14
         CXX_STANDARD_REQUIRED ON
-#        COMPILE_DEFINITIONS BOOST_ASIO_ENABLE_HANDLER_TRACKING
+        COMPILE_DEFINITIONS BOOST_ASIO_ENABLE_HANDLER_TRACKING
         COMPILE_OPTIONS -Wpedantic -Wall -Wextra
         )
 
