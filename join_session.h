@@ -67,7 +67,12 @@ private:
                 queue.push([this, self, line]()
                 {
                     auto response = executor.execute(line);
-                    self->do_write(response);
+                    while(!response.empty())
+                    {
+                        auto line = response.front();
+                        response.pop();
+                        self->do_write(line);
+                    }
                 });
                 do_read();
             }

@@ -1,10 +1,19 @@
 #pragma once
-#include <unordered_map>
 #include <map>
 #include <string>
 #include <mutex>
+#include <memory>
 
-using table = std::pair<std::mutex, std::unordered_map<int, std::string> >;
+struct table
+{
+    std::unique_ptr<std::mutex> mutex;
+    std::map<int, std::string> map;
+
+    table()
+    {
+        mutex = std::make_unique<std::mutex>();
+    }
+};
 
 class DataBase
 {
