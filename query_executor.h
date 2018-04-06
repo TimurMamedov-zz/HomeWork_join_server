@@ -3,16 +3,12 @@
 \brief
 */
 #pragma once
-#include <boost/asio.hpp>
 #include <string>
 #include <mutex>
 #include <functional>
 #include <unordered_map>
 #include <queue>
-#include "parser.h"
 #include "data_base.h"
-
-namespace ba = boost::asio;
 
 using InputIterator = std::map<int, std::string>::iterator;
 using Container = std::queue<std::string>;
@@ -21,10 +17,9 @@ class QueryExecutor
 {
 public:
     QueryExecutor();
-    std::queue<std::string>execute(std::string query);
+    std::queue<std::string> execute(std::string query);
 
 private:
-    Parser parser;
     std::unordered_map<std::string,
         std::function<std::queue<std::string>(const std::vector<std::string>&)> > func_hash;
 
