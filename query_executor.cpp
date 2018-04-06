@@ -125,18 +125,22 @@ void QueryExecutor::set_intersection(InputIterator first1, InputIterator last1,
                                      Container &container)
 {
     while (first1 != last1 && first2 != last2)
-        if (*first1 < *first2)
+    {
+        if ((*first1).first < (*first2).first)
+        {
             ++first1;
-        else if (*first2 < *first1)
-            ++first2;
+        }
         else
         {
-            container.emplace(std::to_string((*first1).first) + "," +
-                              (*first1).second + "," +
-                              (*first2).second + "\n");
-            ++first1;
+            if (!((*first2).first < (*first1).first))
+            {
+                container.emplace(std::to_string((*first1).first) + "," +
+                                  (*first1).second + "," +
+                                  (*first2).second + "\n");
+            }
             ++first2;
         }
+    }
 }
 
 void QueryExecutor::set_symmetric_difference(InputIterator first1, InputIterator last1,
@@ -155,7 +159,7 @@ void QueryExecutor::set_symmetric_difference(InputIterator first1, InputIterator
             });
             return;
         }
-        if (*first1 < *first2)
+        if ((*first1).first < (*first2).first)
         {
             container.emplace(std::to_string((*first1).first) + "," +
                               (*first1).second + "," + "\n");
@@ -163,7 +167,7 @@ void QueryExecutor::set_symmetric_difference(InputIterator first1, InputIterator
         }
         else
         {
-            if (*first2 < *first1)
+            if ((*first2).first < (*first1).first)
             {
                 container.emplace(std::to_string((*first2).first) + "," + "," +
                                   (*first2).second + "\n");

@@ -2,7 +2,6 @@
 #include <thread>
 #include "thread_pool.h"
 #include "join_session.h"
-#include "parser.h"
 
 class join_server
 {

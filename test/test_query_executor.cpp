@@ -39,7 +39,7 @@ BOOST_FIXTURE_TEST_CASE(test_truncate, Fixture)
 BOOST_FIXTURE_TEST_CASE(test_intersection, Fixture)
 {
     auto expectedVector = getVectorFromQueue(std::move(queueOK));
-
+    executor.execute("TRUNCATE A\n");
     executor.execute("INSERT A 0 lean\n");
     executor.execute("INSERT A 1 sweater\n");
     executor.execute("INSERT A 2 frank\n");
@@ -51,7 +51,7 @@ BOOST_FIXTURE_TEST_CASE(test_intersection, Fixture)
     BOOST_CHECK_EQUAL_COLLECTIONS(currentVector.begin(), currentVector.end(),
                                   expectedVector.begin(), expectedVector.end());
 
-
+    executor.execute("TRUNCATE B\n");
     executor.execute("INSERT B 3 proposal\n");
     executor.execute("INSERT B 4 example\n");
     executor.execute("INSERT B 5 lake\n");
@@ -76,7 +76,7 @@ BOOST_FIXTURE_TEST_CASE(test_intersection, Fixture)
 BOOST_FIXTURE_TEST_CASE(test_simmetric_difference, Fixture)
 {
     auto expectedVector = getVectorFromQueue(std::move(queueOK));
-
+    executor.execute("TRUNCATE A\n");
     executor.execute("INSERT A 0 lean\n");
     executor.execute("INSERT A 1 sweater\n");
     executor.execute("INSERT A 2 frank\n");
@@ -88,7 +88,7 @@ BOOST_FIXTURE_TEST_CASE(test_simmetric_difference, Fixture)
     BOOST_CHECK_EQUAL_COLLECTIONS(currentVector.begin(), currentVector.end(),
                                   expectedVector.begin(), expectedVector.end());
 
-
+    executor.execute("TRUNCATE B\n");
     executor.execute("INSERT B 3 proposal\n");
     executor.execute("INSERT B 4 example\n");
     executor.execute("INSERT B 5 lake\n");
