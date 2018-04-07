@@ -65,7 +65,6 @@ BOOST_FIXTURE_TEST_CASE(test_intersection, Fixture)
 
     Intersection();
     query = executor.execute("INTERSECTION\n");
-    std::cout << query.size() << std::endl;
     currentVector = getVectorFromQueue(std::move(query));
     expectedVector = getVectorFromQueue(std::move(queueIntersection));
 
@@ -75,35 +74,10 @@ BOOST_FIXTURE_TEST_CASE(test_intersection, Fixture)
 
 BOOST_FIXTURE_TEST_CASE(test_simmetric_difference, Fixture)
 {
-    auto expectedVector = getVectorFromQueue(std::move(queueOK));
-    executor.execute("TRUNCATE A\n");
-    executor.execute("INSERT A 0 lean\n");
-    executor.execute("INSERT A 1 sweater\n");
-    executor.execute("INSERT A 2 frank\n");
-    executor.execute("INSERT A 3 violation\n");
-    executor.execute("INSERT A 4 quality\n");
-    auto query = executor.execute("INSERT A 5 precision\n");
-    auto currentVector = getVectorFromQueue(std::move(query));
-
-    BOOST_CHECK_EQUAL_COLLECTIONS(currentVector.begin(), currentVector.end(),
-                                  expectedVector.begin(), expectedVector.end());
-
-    executor.execute("TRUNCATE B\n");
-    executor.execute("INSERT B 3 proposal\n");
-    executor.execute("INSERT B 4 example\n");
-    executor.execute("INSERT B 5 lake\n");
-    executor.execute("INSERT B 6 flour\n");
-    executor.execute("INSERT B 7 wonder\n");
-    query = executor.execute("INSERT B 8 selection\n");
-    currentVector = getVectorFromQueue(std::move(query));
-
-    BOOST_CHECK_EQUAL_COLLECTIONS(currentVector.begin(), currentVector.end(),
-                                  expectedVector.begin(), expectedVector.end());
-
     Simmetric_difference();
-    query = executor.execute("SYMMETRIC_DIFFERENCE\n");
-    currentVector = getVectorFromQueue(std::move(query));
-    expectedVector = getVectorFromQueue(std::move(queueSimmetric_difference));
+    auto query = executor.execute("SYMMETRIC_DIFFERENCE\n");
+    auto currentVector = getVectorFromQueue(std::move(query));
+    auto expectedVector = getVectorFromQueue(std::move(queueSimmetric_difference));
 
     BOOST_CHECK_EQUAL_COLLECTIONS(currentVector.begin(), currentVector.end(),
                                   expectedVector.begin(), expectedVector.end());

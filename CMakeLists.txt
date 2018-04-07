@@ -25,7 +25,7 @@ add_executable(${PROJECT_NAME} ${SRC_LIST} join_server.h join_session.h
 set_target_properties(${PROJECT_NAME} PROPERTIES
         CXX_STANDARD 14
         CXX_STANDARD_REQUIRED ON
-        COMPILE_DEFINITIONS BOOST_ASIO_ENABLE_HANDLER_TRACKING
+#        COMPILE_DEFINITIONS BOOST_ASIO_ENABLE_HANDLER_TRACKING
         COMPILE_OPTIONS -Wpedantic -Wall -Wextra
         )
 

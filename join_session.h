@@ -37,7 +37,7 @@ public:
 
     void do_write(std::string response)
     {
-        std::lock_guard<std::mutex> lk(readWriteMutex);
+//        std::lock_guard<std::mutex> lk(readWriteMutex);
         auto self(shared_from_this());
         boost::asio::async_write(socket_,
                                  boost::asio::buffer(response, response.size()),
@@ -53,10 +53,10 @@ public:
 private:
     void do_read()
     {
-        std::lock_guard<std::mutex> lk(readWriteMutex);
+//        std::lock_guard<std::mutex> lk(readWriteMutex);
         auto self(shared_from_this());
         boost::asio::async_read_until(socket_,
-                                      streambuf, '\n',
+                                      streambuf, "\n",
                                       [this, self](boost::system::error_code ec, std::size_t /*length*/)
         {
             if (!ec)
