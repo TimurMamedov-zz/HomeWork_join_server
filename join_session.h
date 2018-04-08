@@ -35,21 +35,6 @@ public:
         do_read();
     }
 
-    void do_write(std::string response)
-    {
-        std::lock_guard<std::mutex> lk(readWriteMutex);
-        auto self(shared_from_this());
-        boost::asio::async_write(socket_,
-                                 boost::asio::buffer(response, response.size()),
-                                 [this, self, response](boost::system::error_code ec, std::size_t /*length*/)
-        {
-            if (ec)
-            {
-                join_sessions_.erase(shared_from_this());
-            }
-        });
-    }
-
 private:
     void do_read()
     {
@@ -62,17 +47,11 @@ private:
             if (!ec)
             {
                 std::istream is(&streambuf);
-                std::string line;
-                std::getline(is, line);
-                queue.push([this, self, line]()
+                std::string query;
+                std::getline(is, query);
+                queue.push([this, self, query]()
                 {
-                    auto response = executor.execute(line);
-                    while(!response.empty())
-                    {
-                        auto line = response.front();
-                        response.pop();
-                        self->do_write(line);
-                    }
+                    this->do_write(executor.execute(query));
                 });
                 do_read();
             }
@@ -81,6 +60,33 @@ private:
                 join_sessions_.erase(shared_from_this());
             }
         });
+    }
+
+    void do_write(std::queue<std::string> response)
+    {
+        if(!response.empty())
+        {
+            std::lock_guard<std::mutex> lk(readWriteMutex);
+            auto self(shared_from_this());
+            auto front = response.front();
+            response.pop();
+            boost::asio::async_write(socket_,
+                                     boost::asio::buffer(front, front.size()),
+                                     [this, self, response](boost::system::error_code ec, std::size_t /*length*/)
+            {
+                if (!ec)
+                {
+                    if(!response.empty())
+                    {
+                        this->do_write(std::move(response));
+                    }
+                }
+                else
+                    join_sessions_.erase(shared_from_this());
+            });
+        }
+        else
+            std::cerr << "response is empty!\n";
     }
 
     std::mutex readWriteMutex;

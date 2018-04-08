@@ -9,8 +9,8 @@ public:
     {
         try
         {
-            auto thread_count = std::thread::hardware_concurrency() - 1;
-            if(!thread_count)
+            auto thread_count = std::thread::hardware_concurrency() - 2;
+            if(thread_count <= 0)
                 thread_count = 1;
             cond_var_vector = std::vector<std::condition_variable>(thread_count);
 
