@@ -64,9 +64,9 @@ private:
 
     void do_write(std::queue<std::string> response)
     {
+        std::lock_guard<std::mutex> lk(readWriteMutex);
         if(!response.empty())
         {
-            std::lock_guard<std::mutex> lk(readWriteMutex);
             auto self(shared_from_this());
             auto front = response.front();
             response.pop();
