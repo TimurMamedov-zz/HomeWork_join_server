@@ -4,6 +4,7 @@
 #include <boost/asio.hpp>
 #include <string>
 #include <mutex>
+#include <atomic>
 #include "threadsafe_queue.h"
 #include "query_executor.h"
 
@@ -23,7 +24,7 @@ public:
                  std::set<join_session_ptr>& join_sessions,
                  ThreadSave_Queue<std::function<void()> >& queue_,
                  QueryExecutor& executor_)
-        : socket_(std::move(socket)),
+        : isPreviousWriteDone(true), socket_(std::move(socket)),
           join_sessions_(join_sessions),
           queue(queue_), executor(executor_)
     {
@@ -51,6 +52,9 @@ private:
                 std::getline(is, query);
                 queue.push([this, self, query]()
                 {
+                    std::unique_lock<std::mutex> unique_lock(cond_varMutex);
+                    cond_var.wait(unique_lock, [this](){ return this->isPreviousWriteDoneFunc(); });
+                    this->isPreviousWriteDone = false;
                     this->do_write(executor.execute(query));
                 });
                 do_read();
@@ -80,19 +84,38 @@ private:
                     {
                         this->do_write(std::move(response));
                     }
+                    else
+                    {
+                        isPreviousWriteDone = true;
+                        std::lock_guard<std::mutex> lock_guard(cond_varMutex);
+                        cond_var.notify_all();
+                    }
                 }
                 else
+                {
+                    isPreviousWriteDone = true;
+                    std::lock_guard<std::mutex> lock_guard(cond_varMutex);
+                    cond_var.notify_all();
                     join_sessions_.erase(shared_from_this());
+                }
             });
         }
         else
             std::cerr << "response is empty!\n";
     }
 
+    bool isPreviousWriteDoneFunc()
+    {
+        return isPreviousWriteDone;
+    }
+
     std::mutex readWriteMutex;
+    std::mutex cond_varMutex;
     boost::asio::streambuf streambuf;
     ba::ip::tcp::socket socket_;
     std::set<join_session_ptr>& join_sessions_;
     ThreadSave_Queue<std::function<void()> >& queue;
     QueryExecutor& executor;
+    std::condition_variable cond_var;
+    std::atomic_bool isPreviousWriteDone;
 };

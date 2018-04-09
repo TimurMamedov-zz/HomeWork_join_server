@@ -4,6 +4,9 @@
 #include <algorithm>
 #include <cctype>
 
+#include <chrono>
+#include <thread>
+
 std::map<std::string, table> DataBase::tables;
 
 QueryExecutor::QueryExecutor()
@@ -40,7 +43,7 @@ QueryExecutor::QueryExecutor()
 std::queue<std::string> QueryExecutor::execute(std::string query)
 {
     std::queue<std::string> response;
-
+//    std::this_thread::sleep_for(std::chrono::milliseconds(150));
     std::istringstream iss(query);
     std::vector<std::string> words;
     std::copy(std::istream_iterator<std::string>(iss),
